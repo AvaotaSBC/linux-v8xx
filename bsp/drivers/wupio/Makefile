@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0
+
+# Keep the list ordered.
+obj-$(CONFIG_AW_WUPIO) += wupio-sunxi.o
+obj-$(CONFIG_AW_WUPIO_KEYBOARD_GPIO) += gpio-keys.o

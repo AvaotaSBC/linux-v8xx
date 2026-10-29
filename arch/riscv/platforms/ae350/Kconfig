@@ -1,0 +1,11 @@
+menu "AE3XX Platform Options"
+
+config ATCCPUFREQ
+	def_bool n
+	depends on CPU_FREQ
+config ATCDMAC300
+	tristate "Andestech legacy DMA support"
+	select SND_FTSSP010
+	depends on PLATFORM_AHBDMA
+
+endmenu

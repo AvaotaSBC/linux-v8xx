@@ -1,0 +1,188 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# NOTE! Please use 'git ls-files -i --exclude-standard'
+# command after changing this file, to see if there are
+# any tracked files which get ignored after the change.
+#
+# Normal rules (sorted alphabetically)
+#
+.*
+*.a
+*.asn1.[ch]
+*.bin
+*.bz2
+*.c.[012]*.*
+*.dt.yaml
+*.dtb
+*.dtb.S
+*.dwo
+*.elf
+*.gcno
+*.gz
+*.i
+*.ko
+*.lex.c
+*.ll
+*.lst
+*.lz4
+*.lzma
+*.lzo
+*.mod
+*.mod.c
+*.ns_deps
+*.o
+*.o.*
+*.patch
+*.s
+*.so
+*.so.dbg
+*.su
+*.symtypes
+*.tab.[ch]
+*.tar
+*.xz
+Module.symvers
+modules.builtin
+modules.order
+
+#
+# Top-level generic files
+#
+/tags
+/TAGS
+/linux
+/vmlinux
+/vmlinux.32
+/vmlinux-gdb.py
+/vmlinuz
+/System.map
+/Module.markers
+/modules.builtin.modinfo
+
+#
+# RPM spec file (make rpm-pkg)
+#
+/*.spec
+
+#
+# Debian directory (make deb-pkg)
+#
+/debian/
+
+#
+# Snap directory (make snap-pkg)
+#
+/snap/
+
+#
+# tar directory (make tar*-pkg)
+#
+/tar-install/
+
+#
+# We don't want to ignore the following even if they are dot-files
+#
+!.clang-format
+!.cocciconfig
+!.get_maintainer.ignore
+!.gitattributes
+!.gitignore
+!.mailmap
+
+#
+# Generated include files
+#
+/include/config/
+/include/generated/
+/include/ksym/
+/arch/*/include/generated/
+
+# stgit generated dirs
+patches-*
+
+# quilt's files
+patches
+series
+
+# cscope files
+cscope.*
+ncscope.*
+
+# gnu global files
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+# id-utils files
+ID
+
+*.orig
+*~
+\#*#
+
+#
+# Leavings from module signing
+#
+extra_certificates
+signing_key.pem
+signing_key.priv
+signing_key.x509
+x509.genkey
+
+# Kconfig presets
+/all.config
+/alldef.config
+/allmod.config
+/allno.config
+/allrandom.config
+/allyes.config
+
+# Kdevelop4
+*.kdev4
+
+# Clang's compilation database file
+/compile_commands.json
+
+# Allwinner
+skel/
+!rootfs.cpio.gz
+!rootfs_32bit.cpio.gz
+output/
+arch/arm64/boot/dts/sunxi/board.dts
+arch/arm/boot/dts/board.dts
+arch/riscv/boot/dts/sunxi/board.dts
+
+#lto lds
+scripts/module-lto.lds
+
+# The V821 BSP is exported as source in this repository.
+
+# Avaota-F1/V821 source inputs are not build products.  Keep the board DTS,
+# BSP configuration, remoteproc implementation and the two V821 Wi-Fi driver
+# trees uploadable even if a generic rule above is expanded later.
+!arch/riscv/boot/dts/avaota-f1.dts
+!arch/riscv/boot/dts/sun300iw1p1*.dts
+!arch/riscv/boot/dts/sun300iw1p1*.dtsi
+!bsp/configs/linux-5.4-ansc/sun300iw1p1*.dtsi
+!bsp/configs/linux-5.4-ansc/sun300iw1p1*_defconfig
+!bsp/drivers/remoteproc/**/*.c
+!bsp/drivers/remoteproc/**/*.h
+!bsp/drivers/remoteproc/**/Kconfig
+!bsp/drivers/remoteproc/**/Makefile
+!bsp/drivers/net/wireless/v821_fmac/**/*.c
+!bsp/drivers/net/wireless/v821_fmac/**/*.h
+!bsp/drivers/net/wireless/v821_fmac/**/Kconfig
+!bsp/drivers/net/wireless/v821_fmac/**/Makefile
+!bsp/drivers/net/wireless/v821_smac/**/*.c
+!bsp/drivers/net/wireless/v821_smac/**/*.h
+!bsp/drivers/net/wireless/v821_smac/**/Kconfig
+!bsp/drivers/net/wireless/v821_smac/**/Makefile
+!bsp/drivers/bluetooth/xradio_bt_smd/**/*.c
+!bsp/drivers/bluetooth/xradio_bt_smd/**/*.h
+
+# V821 runtime firmware is kept in the Buildroot external repository under
+# package/v821-firmware/firmware/, rather than duplicated in this kernel tree.

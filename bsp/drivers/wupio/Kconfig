@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+menu "WUPIO Drivers"
+	depends on AW_BSP
+
+config AW_WUPIO
+	tristate "WUPIO Support for Allwinner SoCs"
+	depends on AW_BSP
+	help
+	  If you say Y here, you will get support for the WUPIO found on
+	  Allwinner SoCs.
+
+config AW_WUPIO_KEYBOARD_GPIO
+	tristate "GPIO Buttons With WUPIO Support"
+	depends on GPIOLIB || COMPILE_TEST
+	help
+	  This driver implements support for buttons connected
+	  to GPIO pins of various CPUs (and some other chips) With WUPIO Support.
+
+	  Say Y here if your device has buttons connected
+	  directly to such GPIO pins.  Your board-specific
+	  setup logic must also provide a platform device,
+	  with configuration data saying which GPIOs are used.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called gpio_keys.
+
+endmenu
+

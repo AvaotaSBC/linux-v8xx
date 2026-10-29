@@ -1,0 +1,118 @@
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/platform_device.h>
+#include <linux/interrupt.h>
+#include <linux/io.h>
+#include <linux/of.h>
+#include <linux/reboot.h>
+#include <linux/suspend.h>
+
+#include <asm/tlbflush.h>
+#include <asm/sbi.h>
+#include <asm/csr.h>
+#include <asm/andesv5/smu.h>
+#include <asm/andesv5/proc.h>
+
+// define in riscv/kernel/pm.c
+extern int suspend_begin;
+
+struct atc_smu atcsmu;
+EXPORT_SYMBOL(atcsmu);
+
+#ifdef CONFIG_ATCSMU
+// main hart
+extern int num_cpus;
+void andes_suspend2ram(void)
+{
+	sbi_andes_set_suspend_mode(DeepSleepMode);
+	sbi_andes_enter_suspend_mode(true, *wake_mask);
+}
+
+
+// main hart
+void andes_suspend2standby(void)
+{
+	sbi_andes_set_suspend_mode(LightSleepMode);
+	sbi_andes_enter_suspend_mode(true, *wake_mask);
+}
+
+// other harts or hotplugging hart
+void atcsmu100_set_suspend_mode(void)
+{
+	if (suspend_begin == PM_SUSPEND_MEM) {
+		sbi_andes_set_suspend_mode(DeepSleepMode);
+	} else if (suspend_begin == PM_SUSPEND_STANDBY) {
+		sbi_andes_set_suspend_mode(LightSleepMode);
+	} else {
+		sbi_andes_set_suspend_mode(CpuHotplugDeepSleepMode);
+	}
+}
+#endif
+
+static int atcsmu_probe(struct platform_device *pdev)
+{
+	struct atc_smu *smu = &atcsmu;
+	int ret = -ENOENT;
+	int pcs = 0;
+
+	spin_lock_init(&smu->lock);
+
+	smu->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!smu->res)
+		goto err_exit;
+
+	ret = -EBUSY;
+
+	smu->res = request_mem_region(smu->res->start,
+					smu->res->end - smu->res->start+  1,
+					pdev->name);
+	if (!smu->res)
+		goto err_exit;
+
+	ret = -EINVAL;
+
+	smu->base = ioremap(smu->res->start,
+					smu->res->end - smu->res->start + 1);
+	if (!smu->base)
+		goto err_ioremap;
+
+	for (pcs = 0; pcs < MAX_PCS_SLOT; pcs++)
+		writel(0xffdfffff, (void *)(smu->base + PCSN_WE_OFF(pcs)));
+
+	return 0;
+err_ioremap:
+	release_resource(smu->res);
+err_exit:
+	return ret;
+}
+
+static int __exit atcsmu_remove(struct platform_device *pdev)
+{
+	return 0;
+}
+
+#ifdef CONFIG_OF
+static const struct of_device_id atcsmu_of_id_table[] = {
+	{ .compatible = "andestech,atcsmu" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, atcsmu_of_id_table);
+#endif
+
+static struct platform_driver atcsmu_driver = {
+	.probe = atcsmu_probe,
+	.remove = __exit_p(atcsmu_remove),
+	.driver = {
+		.name = "atcsmu",
+		.of_match_table = of_match_ptr(atcsmu_of_id_table),
+	},
+};
+
+static int __init atcsmu_init(void)
+{
+	int ret = platform_driver_register(&atcsmu_driver);
+
+	return ret;
+}
+subsys_initcall(atcsmu_init);

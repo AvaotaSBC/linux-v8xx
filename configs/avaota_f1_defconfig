@@ -249,9 +249,8 @@ CONFIG_OVERLAY_FS=y
 CONFIG_MSDOS_FS=y
 CONFIG_PARTITION_ADVANCED=y
 CONFIG_MSDOS_PARTITION=y
-# The V821 Boot0 compatibility map is not a host-visible GPT.  Use the DOS
-# MBR at LBA 0 so /dev/mmcblk0p2 remains the SD root partition.
-# CONFIG_EFI_PARTITION is not set
+# The common PhoenixCard image uses GPT; the direct SD raw image uses DOS/MBR.
+CONFIG_EFI_PARTITION=y
 CONFIG_VFAT_FS=y
 CONFIG_TMPFS=y
 CONFIG_TMPFS_POSIX_ACL=y
